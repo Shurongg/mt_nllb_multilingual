@@ -1,6 +1,6 @@
 # Runbook
 
-This runbook describes the planned workflow. Phase 1 data preparation and Phase 2 balanced joint-data construction are implemented; training, translation, and evaluation scripts are still skeletons.
+This runbook describes the planned workflow. Phase 1 data preparation, Phase 2 balanced joint-data construction, and Phase 3 zero-shot translation are implemented; training and evaluation scripts are still skeletons.
 
 ## 1. Prepare Data
 
@@ -57,7 +57,22 @@ With the current data, the default ratio creates 500 Javanese records and 500 sa
 ## 3. Run zero_shot
 
 ```bash
-python src/run_experiment.py --mode zero_shot --stage all --config configs/zero_shot.yaml
+python -m src.translate_nllb \
+  --model_name facebook/nllb-200-distilled-600M \
+  --input_file data/processed/jav_eng/test.jsonl \
+  --output_dir outputs/zero_shot/jav_eng \
+  --target_lang eng_Latn \
+  --num_beams 5 \
+  --batch_size 8
+```
+
+Equivalent config-driven command:
+
+```bash
+python -m src.run_experiment \
+  --mode zero_shot \
+  --stage translate \
+  --config configs/zero_shot.yaml
 ```
 
 ## 4. Run java_only

@@ -40,7 +40,7 @@ The original test split must remain untouched and must not be used for training 
 
 ## Planned Commands
 
-Phase 1 data preparation and Phase 2 balanced joint-data construction are implemented. Training, translation, and evaluation are still planned skeletons at this stage.
+Phase 1 data preparation, Phase 2 balanced joint-data construction, and Phase 3 zero-shot translation are implemented. Training and evaluation are still planned skeletons at this stage.
 
 ```bash
 python -m src.prepare_data \
@@ -56,7 +56,15 @@ python -m src.build_joint_data \
   --seed 42 \
   --ratio 1.0
 
-python src/run_experiment.py --mode zero_shot --stage all --config configs/zero_shot.yaml
+python -m src.translate_nllb \
+  --model_name facebook/nllb-200-distilled-600M \
+  --input_file data/processed/jav_eng/test.jsonl \
+  --output_dir outputs/zero_shot/jav_eng \
+  --target_lang eng_Latn \
+  --num_beams 5 \
+  --batch_size 8
+
+python -m src.run_experiment --mode zero_shot --stage translate --config configs/zero_shot.yaml
 python src/run_experiment.py --mode java_only --stage all --config configs/java_only.yaml
 python src/run_experiment.py --mode joint_balanced --stage all --config configs/joint_balanced.yaml
 
