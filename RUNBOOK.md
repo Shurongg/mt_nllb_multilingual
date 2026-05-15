@@ -1,6 +1,6 @@
 # Runbook
 
-This runbook describes the planned workflow. Phase 1 data preparation, Phase 2 balanced joint-data construction, and Phase 3 zero-shot translation are implemented; training and evaluation scripts are still skeletons.
+This runbook describes the planned workflow. Phase 1 data preparation, Phase 2 balanced joint-data construction, Phase 3 zero-shot translation, and Phase 4 local BLEU/chrF++ evaluation are implemented; training is still a skeleton.
 
 ## 1. Prepare Data
 
@@ -89,14 +89,29 @@ python src/run_experiment.py --mode joint_balanced --stage all --config configs/
 
 ## 6. Evaluate
 
-Planned metrics:
+Implemented local metrics:
 
 - BLEU
 - chrF++
-- Optional COMET later
+
+COMET is not implemented in this phase.
 
 ```bash
-python src/evaluate_mt.py --help
+python -m src.evaluate_mt \
+  --hypotheses outputs/zero_shot/jav_eng/hypotheses.txt \
+  --references outputs/zero_shot/jav_eng/references.txt \
+  --sources outputs/zero_shot/jav_eng/sources.txt \
+  --output_json outputs/zero_shot/jav_eng/metrics.json \
+  --mode zero_shot
+```
+
+Equivalent config-driven command:
+
+```bash
+python -m src.run_experiment \
+  --mode zero_shot \
+  --stage evaluate \
+  --config configs/zero_shot.yaml
 ```
 
 ## 7. Make Results Table

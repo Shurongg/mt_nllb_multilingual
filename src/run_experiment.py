@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 
 try:
+    from .evaluate_mt import evaluate_files
     from .translate_nllb import translate_file
 except ImportError:  # Allows `python src/run_experiment.py` during local debugging.
+    from evaluate_mt import evaluate_files
     from translate_nllb import translate_file
 
 
@@ -45,6 +47,22 @@ def _run_zero_shot_translate(config: dict) -> None:
     print(f"  empty hypotheses: {result['empty_hypothesis_count']}")
 
 
+def _run_zero_shot_evaluate(config: dict) -> None:
+    output_dir = config["output_dir"]
+    result = evaluate_files(
+        hypotheses=f"{output_dir}/hypotheses.txt",
+        references=f"{output_dir}/references.txt",
+        sources=f"{output_dir}/sources.txt",
+        output_json=f"{output_dir}/metrics.json",
+        mode="zero_shot",
+    )
+    print("Zero-shot evaluation complete:")
+    print(f"  metrics: {output_dir}/metrics.json")
+    print(f"  samples: {result['num_samples']}")
+    print(f"  BLEU: {result['bleu']:.4f}")
+    print(f"  chrF++: {result['chrf']:.4f}")
+
+
 def main() -> None:
     """Run supported experiment stages."""
     args = parse_args()
@@ -55,17 +73,21 @@ def main() -> None:
             f"Config mode {config.get('mode')!r} does not match CLI mode {args.mode!r}."
         )
 
-    if args.mode == "zero_shot" and args.stage in {"translate", "all"}:
+    if args.mode == "zero_shot" and args.stage == "translate":
         _run_zero_shot_translate(config)
-        if args.stage == "all":
-            print("Evaluation metrics are not implemented yet; ran translation only.")
+        return
+
+    if args.mode == "zero_shot" and args.stage == "evaluate":
+        _run_zero_shot_evaluate(config)
+        return
+
+    if args.mode == "zero_shot" and args.stage == "all":
+        _run_zero_shot_translate(config)
+        _run_zero_shot_evaluate(config)
         return
 
     if args.stage == "train":
         print("Training is not implemented yet.")
-        return
-    if args.stage == "evaluate":
-        print("Evaluation metrics are not implemented yet.")
         return
 
     print(f"Stage {args.stage!r} for mode {args.mode!r} is not implemented yet.")
