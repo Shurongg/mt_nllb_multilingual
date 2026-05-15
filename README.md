@@ -40,7 +40,7 @@ The original test split must remain untouched and must not be used for training 
 
 ## Planned Commands
 
-Phase 1 data preparation is implemented. Training, translation, evaluation, and joint-data construction are still planned skeletons at this stage.
+Phase 1 data preparation and Phase 2 balanced joint-data construction are implemented. Training, translation, and evaluation are still planned skeletons at this stage.
 
 ```bash
 python -m src.prepare_data \
@@ -49,7 +49,12 @@ python -m src.prepare_data \
   --output_dir data/processed \
   --report_dir data/reports
 
-python src/build_joint_data.py --help
+python -m src.build_joint_data \
+  --jav_train data/processed/jav_eng/train.jsonl \
+  --ind_train data/processed/ind_eng/train.jsonl \
+  --output_file data/processed/joint/train_balanced.jsonl \
+  --seed 42 \
+  --ratio 1.0
 
 python src/run_experiment.py --mode zero_shot --stage all --config configs/zero_shot.yaml
 python src/run_experiment.py --mode java_only --stage all --config configs/java_only.yaml

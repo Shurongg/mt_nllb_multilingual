@@ -1,6 +1,6 @@
 # Runbook
 
-This runbook describes the planned workflow. Phase 1 data preparation is implemented; later training, translation, evaluation, and joint-data construction scripts are still skeletons.
+This runbook describes the planned workflow. Phase 1 data preparation and Phase 2 balanced joint-data construction are implemented; training, translation, and evaluation scripts are still skeletons.
 
 ## 1. Prepare Data
 
@@ -38,7 +38,12 @@ data/reports/data_stats.md
 Create the balanced multilingual training file for `joint_balanced`.
 
 ```bash
-python src/build_joint_data.py --help
+python -m src.build_joint_data \
+  --jav_train data/processed/jav_eng/train.jsonl \
+  --ind_train data/processed/ind_eng/train.jsonl \
+  --output_file data/processed/joint/train_balanced.jsonl \
+  --seed 42 \
+  --ratio 1.0
 ```
 
 Expected output:
@@ -46,6 +51,8 @@ Expected output:
 ```text
 data/processed/joint/train_balanced.jsonl
 ```
+
+With the current data, the default ratio creates 500 Javanese records and 500 sampled Indonesian records for 1000 total joint training records.
 
 ## 3. Run zero_shot
 
