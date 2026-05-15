@@ -1,0 +1,60 @@
+{
+  "splits": [
+    {
+      "dataset": "jav_eng",
+      "split": "train",
+      "source_file": "data/raw/jav_eng/train.jv",
+      "target_file": "data/raw/jav_eng/train.en",
+      "output_file": "data/processed/jav_eng/train.jsonl",
+      "input_source_lines": 500,
+      "input_target_lines": 500,
+      "output_records": 500,
+      "removed_empty_count": 0,
+      "removed_duplicate_count": 0,
+      "src_lang": "jav_Latn",
+      "tgt_lang": "eng_Latn"
+    },
+    {
+      "dataset": "jav_eng",
+      "split": "dev",
+      "source_file": "data/raw/jav_eng/valid.jv",
+      "target_file": "data/raw/jav_eng/valid.en",
+      "output_file": "data/processed/jav_eng/dev.jsonl",
+      "input_source_lines": 100,
+      "input_target_lines": 100,
+      "output_records": 100,
+      "removed_empty_count": 0,
+      "removed_duplicate_count": 0,
+      "src_lang": "jav_Latn",
+      "tgt_lang": "eng_Latn"
+    },
+    {
+      "dataset": "jav_eng",
+      "split": "test",
+      "source_file": "data/raw/jav_eng/test.jv",
+      "target_file": "data/raw/jav_eng/test.en",
+      "output_file": "data/processed/jav_eng/test.jsonl",
+      "input_source_lines": 400,
+      "input_target_lines": 400,
+      "output_records": 400,
+      "removed_empty_count": 0,
+      "removed_duplicate_count": 0,
+      "src_lang": "jav_Latn",
+      "tgt_lang": "eng_Latn"
+    },
+    {
+      "dataset": "ind_eng",
+      "split": "train",
+      "source_file": "data/raw/ind_eng/train.ind",
+      "target_file": "data/raw/ind_eng/train.eng",
+      "output_file": "data/processed/ind_eng/train.jsonl",
+      "input_source_lines": 17850,
+      "input_target_lines": 17850,
+      "output_records": 17850,
+      "removed_empty_count": 0,
+      "removed_duplicate_count": 0,
+      "src_lang": "ind_Latn",
+      "tgt_lang": "eng_Latn"
+    }
+  ]
+}
