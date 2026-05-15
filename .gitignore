@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Raw and processed data
+data/raw/
+data/processed/
+
+# Large model outputs and checkpoints
+outputs/
+*.log
+
+# Hugging Face / training artifacts
+checkpoint-*/
+runs/
+wandb/

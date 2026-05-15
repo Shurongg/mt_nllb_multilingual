@@ -1,0 +1,9 @@
+mode: zero_shot
+model_name: facebook/nllb-200-distilled-600M
+test_file: data/processed/jav_eng/test.jsonl
+output_dir: outputs/zero_shot/jav_eng
+target_lang: eng_Latn
+num_beams: 5
+batch_size_eval: 8
+seed: 42
+
