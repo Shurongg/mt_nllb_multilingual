@@ -41,7 +41,6 @@ DATASET_ALLOWED_KEYS = {"input_ids", "attention_mask", "labels"}
 FINAL_MODEL_INPUT_KEYS = {"input_ids", "attention_mask", "labels"}
 FINAL_MODEL_INPUT_KEY_ORDER = ["input_ids", "attention_mask", "labels"]
 FORBIDDEN_MODEL_INPUT_KEYS = {
-    "decoder_input_ids",
     "decoder_inputs_embeds",
     "inputs_embeds",
 }
@@ -283,7 +282,6 @@ def _training_args_kwargs(
         "greater_is_better": True,
         "save_total_limit": 2,
         "seed": seed,
-        "data_seed": seed,
         "report_to": [],
         "remove_unused_columns": False,
     }
@@ -386,6 +384,8 @@ def train_from_config(
     )
 
     try:
+        args_kwargs.pop("data_seed", None)
+        args_kwargs["save_only_model"] = True
         training_args = Seq2SeqTrainingArguments(**args_kwargs)
         metric_name = "chrf"
         best_metric_name = "eval_chrf"

@@ -1,5 +1,5 @@
 mode: joint_balanced
-model_name: facebook/nllb-200-distilled-600M
+model_name: /mnt/models/facebook/nllb-200-distilled-600M
 train_file: data/processed/joint/train_balanced.jsonl
 dev_file: data/processed/jav_eng/dev.jsonl
 test_file: data/processed/jav_eng/test.jsonl
@@ -16,7 +16,7 @@ training:
   gradient_accumulation_steps: 8
   warmup_ratio: 0.1
   weight_decay: 0.01
-  label_smoothing_factor: 0.1
+  label_smoothing_factor: 0.0
   fp16: true
   max_source_length: 128
   max_target_length: 128

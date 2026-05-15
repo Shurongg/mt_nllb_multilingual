@@ -1,5 +1,5 @@
 mode: zero_shot
-model_name: facebook/nllb-200-distilled-600M
+model_name: /mnt/models/facebook/nllb-200-distilled-600M
 test_file: data/processed/jav_eng/test.jsonl
 output_dir: outputs/zero_shot/jav_eng
 target_lang: eng_Latn
