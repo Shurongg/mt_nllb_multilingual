@@ -40,7 +40,7 @@ The original test split must remain untouched and must not be used for training 
 
 ## Planned Commands
 
-Phase 1 data preparation, Phase 2 balanced joint-data construction, Phase 3 zero-shot translation, and Phase 4 local BLEU/chrF++ evaluation are implemented. Training is still a planned skeleton at this stage.
+Phase 1 data preparation, Phase 2 balanced joint-data construction, Phase 3 zero-shot translation, Phase 4 local BLEU/chrF++ evaluation, and Phase 5 NLLB fine-tuning are implemented. Fine-tuned translation/evaluation orchestration is still pending.
 
 ```bash
 python -m src.prepare_data \
@@ -66,8 +66,22 @@ python -m src.translate_nllb \
 
 python -m src.run_experiment --mode zero_shot --stage translate --config configs/zero_shot.yaml
 python -m src.run_experiment --mode zero_shot --stage evaluate --config configs/zero_shot.yaml
-python src/run_experiment.py --mode java_only --stage all --config configs/java_only.yaml
-python src/run_experiment.py --mode joint_balanced --stage all --config configs/joint_balanced.yaml
+python -m src.train_nllb --mode java_only --config configs/java_only.yaml
+python -m src.train_nllb --mode joint_balanced --config configs/joint_balanced.yaml
+python -m src.run_experiment --mode java_only --stage train --config configs/java_only.yaml
+python -m src.run_experiment --mode joint_balanced --stage train --config configs/joint_balanced.yaml
 
 python src/make_results_table.py --help
+```
+
+Local smoke training can be run with a tiny subset:
+
+```bash
+python -m src.train_nllb \
+  --mode java_only \
+  --config configs/java_only.yaml \
+  --max_train_samples 8 \
+  --max_eval_samples 4 \
+  --num_train_epochs_override 1 \
+  --output_dir_override outputs/smoke/java_only
 ```

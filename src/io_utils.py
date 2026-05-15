@@ -39,6 +39,15 @@ def read_text_lines(path: str | Path) -> list[str]:
     return Path(path).read_text(encoding="utf-8").splitlines()
 
 
+def write_text_lines(lines: Iterable[str], path: str | Path) -> None:
+    """Write text lines to a UTF-8 file."""
+    output_path = Path(path)
+    ensure_dir(output_path.parent)
+    with output_path.open("w", encoding="utf-8") as handle:
+        for line in lines:
+            handle.write(f"{line}\n")
+
+
 def write_json(data: dict, path: str | Path) -> None:
     """Write a dictionary as pretty JSON."""
     output_path = Path(path)

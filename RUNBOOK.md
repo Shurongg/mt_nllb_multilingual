@@ -1,6 +1,6 @@
 # Runbook
 
-This runbook describes the planned workflow. Phase 1 data preparation, Phase 2 balanced joint-data construction, Phase 3 zero-shot translation, and Phase 4 local BLEU/chrF++ evaluation are implemented; training is still a skeleton.
+This runbook describes the planned workflow. Phase 1 data preparation, Phase 2 balanced joint-data construction, Phase 3 zero-shot translation, Phase 4 local BLEU/chrF++ evaluation, and Phase 5 NLLB fine-tuning are implemented. Fine-tuned translation/evaluation orchestration is still pending.
 
 ## 1. Prepare Data
 
@@ -78,14 +78,54 @@ python -m src.run_experiment \
 ## 4. Run java_only
 
 ```bash
-python src/run_experiment.py --mode java_only --stage all --config configs/java_only.yaml
+python -m src.train_nllb \
+  --mode java_only \
+  --config configs/java_only.yaml
+```
+
+Smoke-test command:
+
+```bash
+python -m src.train_nllb \
+  --mode java_only \
+  --config configs/java_only.yaml \
+  --max_train_samples 8 \
+  --max_eval_samples 4 \
+  --num_train_epochs_override 1 \
+  --output_dir_override outputs/smoke/java_only
+```
+
+Equivalent config-driven command:
+
+```bash
+python -m src.run_experiment \
+  --mode java_only \
+  --stage train \
+  --config configs/java_only.yaml
 ```
 
 ## 5. Run joint_balanced
 
 ```bash
-python src/run_experiment.py --mode joint_balanced --stage all --config configs/joint_balanced.yaml
+python -m src.train_nllb \
+  --mode joint_balanced \
+  --config configs/joint_balanced.yaml
 ```
+
+Equivalent config-driven command:
+
+```bash
+python -m src.run_experiment \
+  --mode joint_balanced \
+  --stage train \
+  --config configs/joint_balanced.yaml
+```
+
+Training uses `data/processed/jav_eng/dev.jsonl` for checkpoint selection in both `java_only` and `joint_balanced`. The Javanese-English test set is not used during training or checkpoint selection.
+
+The trainer is configured to select the best checkpoint by dev chrF++ through `Seq2SeqTrainer`. If that setup fails because of a local Transformers compatibility issue, the code falls back to eval loss and prints a warning.
+
+If `fp16: true` is set in the config, fp16 is used only when CUDA is available. On CPU or MPS, fp16 is automatically disabled with a warning.
 
 ## 6. Evaluate
 

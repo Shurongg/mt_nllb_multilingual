@@ -6,9 +6,11 @@ import argparse
 
 try:
     from .evaluate_mt import evaluate_files
+    from .train_nllb import train_from_config
     from .translate_nllb import translate_file
 except ImportError:  # Allows `python src/run_experiment.py` during local debugging.
     from evaluate_mt import evaluate_files
+    from train_nllb import train_from_config
     from translate_nllb import translate_file
 
 
@@ -63,6 +65,13 @@ def _run_zero_shot_evaluate(config: dict) -> None:
     print(f"  chrF++: {result['chrf']:.4f}")
 
 
+def _run_trainable_mode_train(mode: str, config_path: str) -> None:
+    summary = train_from_config(mode=mode, config_path=config_path)
+    print(f"{mode} training complete:")
+    print(f"  saved model: {summary['saved_model_path']}")
+    print(f"  best metric: {summary['best_metric_name']}={summary['best_metric_value']}")
+
+
 def main() -> None:
     """Run supported experiment stages."""
     args = parse_args()
@@ -86,8 +95,30 @@ def main() -> None:
         _run_zero_shot_evaluate(config)
         return
 
-    if args.stage == "train":
-        print("Training is not implemented yet.")
+    if args.mode == "zero_shot" and args.stage == "train":
+        print("zero_shot has no training stage.")
+        return
+
+    if args.mode in {"java_only", "joint_balanced"} and args.stage == "train":
+        _run_trainable_mode_train(args.mode, args.config_path)
+        return
+
+    if args.mode in {"java_only", "joint_balanced"} and args.stage == "all":
+        _run_trainable_mode_train(args.mode, args.config_path)
+        print(
+            "TODO: fine-tuned translation and evaluation orchestration will be "
+            "completed in a later phase. No test outputs were faked."
+        )
+        return
+
+    if args.mode in {"java_only", "joint_balanced"} and args.stage in {
+        "translate",
+        "evaluate",
+    }:
+        print(
+            f"TODO: {args.mode} stage {args.stage!r} will be wired after "
+            "fine-tuned checkpoint translation is finalized. No outputs were faked."
+        )
         return
 
     print(f"Stage {args.stage!r} for mode {args.mode!r} is not implemented yet.")
